@@ -63,7 +63,10 @@ int Buffer[MAX];// = {}; // Initialize array with 0s. // This is done automatica
 // SOURCE: Stack Overflow: How to pass cin to a function?
 bool isEnteredValueNotInt(std::istream& stream, float value){
     // It returns true if the entered value is not an int (float or string).
-    return !stream || (value - floor(value) > 0);
+    // !stream = input stream is not valid = string or something similar.
+    // (value - floor(value) > 0) = positive float
+    // (value  - ceil(value) < 0) = negative float.
+    return !stream || (value - floor(value) > 0) || (value  - ceil(value) < 0);
 }
 
 // Method that clears the input stream and allows user to input a value again.
@@ -235,6 +238,7 @@ void Thread1_Actions(int which){
 calculates its factorial. It prints the array, the largest
 number, and its factorial. */
 void Thread2_Actions(int which){
+
     // Prints the number of the thread. Just to use the parameter, which must be
         // a parameter.
     printf("\n*** thread %d\n", which);
@@ -248,9 +252,14 @@ void Thread2_Actions(int which){
     // Finding the largest number iterating through the array.
     for(int i = 0; i < MAX; i++)
         maxElement = findMax(maxElement, Buffer[i]);
-    // Se imprime el factorial del número más grande.
-    // Printing the factorial of the largest number.
-    cout << "\n - [Factorial: " << factorial(maxElement) << "]" << endl;
+    if(maxElement >= 0) // Sí tiene factorial por ser positivo el valor.
+        // Se imprime el factorial del número más grande.
+        // Printing the factorial of the largest number.
+        cout << "\n - [Factorial: " << factorial(maxElement) << "]" << endl;
+    else
+        /* Al ser número negativo el máximo no tiene factorial en
+            números reales, solo en números complejos.*/
+        cout << "\n -> Maximum element is negative. Real number factorial is not possible." << endl;
 
     /* Context switch back and forth between Threads by calling Thread::Yield.
         This allows to go back to the main Thread (ThreadTest) and continue
@@ -303,6 +312,7 @@ ThreadTest()
     int option = 0;
     // Thread *tSimple;
     // Thread *t[3]; // Array of Threads.
+    Thread* t;
     while(option != 3){
         selectOption(&option);
         switch(option){
@@ -310,7 +320,7 @@ ThreadTest()
             {   // Creamos un ámbito para declarar variable en el case.
                 /* Option 1 –the original code of NachOS will be executed
                 (2 threads are created and execute SimpleThread() function) */
-                Thread *t = new Thread("forked thread");
+                t = new Thread("forked thread");
 
                 t->Fork(SimpleThread, 1);
                 SimpleThread(0);
