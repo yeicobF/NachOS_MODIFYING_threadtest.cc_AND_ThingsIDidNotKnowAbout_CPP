@@ -13,7 +13,7 @@
 #include "system.h"
 #include <iostream> // No dio problemas al compilar.
 #include <cmath> // Para sacar el std::floor.
-/* For the stream check:
+/* For the stream check (std::cin in our case):
 	cin.ignore(std::numeric_limits <std::streamsize>::max(), '\n');
 	*/
 #include <limits>
@@ -26,6 +26,14 @@
 // Maximum size of the array.
 #define MAX 6
 
+// Not to include everything in the std namespace, just what we want.
+// using std::cin;
+// using std::cout;
+// using std::endl;
+
+// At the end it was better to use all of the namespace. A lot of it was necessary.
+using namespace std;
+
 /*
 
     - PRACTICE 8: MODIFY Threadtest.cc
@@ -37,26 +45,12 @@
     Gomez Arreguin Sonni Augusto
 
     Monday, November 9th, 2020
+    Thursday, November 10th, 2020
 */
 
-// Not to include everything in the std namespace, just what we want.
-// using std::cin;
-// using std::cout;
-// using std::endl;
-using namespace std;
-
 // Arreglo compartido entre los hilos/hebras.
-// Shared array for threads.
+// Shared array for threads. Changes will be made globally.
 int Buffer[MAX];// = {}; // Initialize array with 0s. // This is done automatically.
-
-//----------------------------------------------------------------------
-// SimpleThread
-// 	Loop 5 times, yielding the CPU to another ready thread
-//	each iteration.
-//
-//	"which" is simply a number identifying the thread, for debugging
-//	purposes.
-//----------------------------------------------------------------------
 
 // Method that checks if an entered value is valid (Integer) or not.
 // The stream (std::cin in this case) is sent this way as a parameter. I found it that way.
@@ -191,6 +185,15 @@ void printArray(){
     cout << endl;
 }
 
+//----------------------------------------------------------------------
+// SimpleThread
+// 	Loop 5 times, yielding the CPU to another ready thread
+//	each iteration.
+//
+//	"which" is simply a number identifying the thread, for debugging
+//	purposes.
+//----------------------------------------------------------------------
+
 void
 SimpleThread(int which)
 {
@@ -270,8 +273,8 @@ void Thread2_Actions(int which){
 /* Thread 3 –it calculates the average of the numbers in Buffer.
 It prints the array, and the average value of its numbers.*/
 void Thread3_Actions(int which){
-    float avg = 0;
-    int sum = 0;
+    float avg = 0; // For the average of the values of the array.
+    int sum = 0; // Acumulator of values of the array.
 
     // Prints the number of the thread. Just to use the parameter, which must be
         // a parameter.
@@ -289,6 +292,7 @@ void Thread3_Actions(int which){
     // Calcula y muestra el promedio de los elementos del arreglo.
     // Calculating and showing the average of the elements of the array.
     // avg = (float)sum / sizeof(Buffer) / sizeof(int);
+    // I think it is necessary to use the CAST in order to save the value.
     avg = (float)sum / (float)MAX;
     cout << "\n - [Average: " << avg << "]\n" << endl;
 
@@ -312,7 +316,7 @@ ThreadTest()
     int option = 0;
     // Thread *tSimple;
     // Thread *t[3]; // Array of Threads.
-    Thread* t;
+    // Thread* t; // This was possible for this, but not for the others.
     while(option != 3){
         selectOption(&option);
         switch(option){
@@ -320,7 +324,7 @@ ThreadTest()
             {   // Creamos un ámbito para declarar variable en el case.
                 /* Option 1 –the original code of NachOS will be executed
                 (2 threads are created and execute SimpleThread() function) */
-                t = new Thread("forked thread");
+                Thread *t = new Thread("forked thread");
 
                 t->Fork(SimpleThread, 1);
                 SimpleThread(0);

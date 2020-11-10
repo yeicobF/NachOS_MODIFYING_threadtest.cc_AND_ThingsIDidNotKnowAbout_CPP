@@ -1,0 +1,20 @@
+Write a program that shows the following menu: 
+
+MENU:
+ 1. Simple Thread
+ 2. Example of threads (FCFS)
+ 3. Exit Select one option: 
+
+Every time this program is executed, only one option can be selected. If user selects: 
+ 
+	 •Option 1 –the original code of NachOS will be executed (2 threads are created and execute SimpleThread() function) 
+ 
+	 •Option 2 –the program will create 3 threads that will share an array of integers, named Buffer. Size of the array is 6, and the elements of this array will be asked the user to be entered. 
+ 
+Below is the description of the functionality of each one of those threads.
+ 
+ 	 •Thread 1 –it needs to sort the numbers in Buffer in descending order. Once the numbers are sorted, it prints out the array.
+ 
+	 •Thread 2 –it finds the largest number in Buffer, and calculates its factorial. It prints the array, the largest number, and its factorial.
+ 
+	 •Thread 3 –it calculates the average of the numbers in Buffer. Itprints the array, and the average value of its numbers.
