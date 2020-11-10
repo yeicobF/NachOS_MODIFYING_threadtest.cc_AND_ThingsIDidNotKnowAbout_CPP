@@ -258,11 +258,11 @@ void Thread2_Actions(int which){
     if(maxElement >= 0) // Sí tiene factorial por ser positivo el valor.
         // Se imprime el factorial del número más grande.
         // Printing the factorial of the largest number.
-        cout << "\n - [Factorial: " << factorial(maxElement) << "]" << endl;
+        cout << "\n - [Factorial of maximum element [" << cout << maxElement << "]: " << factorial(maxElement) << "]" << endl;
     else
         /* Al ser número negativo el máximo no tiene factorial en
             números reales, solo en números complejos.*/
-        cout << "\n -> Maximum element is negative. Real number factorial is not possible." << endl;
+        cout << "\n -> Maximum element [" << maxElement << "] is negative. Real number factorial is not possible." << endl;
 
     /* Context switch back and forth between Threads by calling Thread::Yield.
         This allows to go back to the main Thread (ThreadTest) and continue
