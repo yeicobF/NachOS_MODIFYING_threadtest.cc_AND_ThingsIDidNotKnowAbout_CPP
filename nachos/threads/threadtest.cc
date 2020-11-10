@@ -58,6 +58,11 @@ int Buffer[MAX];// = {}; // Initialize array with 0s. // This is done automatica
 //	purposes.
 //----------------------------------------------------------------------
 
+// Method that checks if an entered value is valid (Integer).
+bool isEnteredValidInt(std::cin cin, float auxOption){
+    return !cin || (auxOption - floor(auxOption) > 0);
+}
+
 // Function that allows the user to choose what to do from the menu.
 // Option passes by reference not to return it from the function.
 void selectOption(int *option){
@@ -72,27 +77,25 @@ void selectOption(int *option){
 		// También valida que el número ingresado no sea flotante.
 		// Si la diferencia entre el floor y el valor es > 0, es flotante (decimales).
 		if(!cin || (auxOption - floor(auxOption) > 0)){ // !std::cin || std::cin.fail();
-				/* Last read failed either due to I/O error EOF.
-					Or the last stream of chars wasn't a valid number.*/
-				cout << "\n - ENTER A VALID NUMBER - \n";
-				// Establecer el stream como true para que no se cicle después.
-				// Esto se logra limpiando el mal estado del input stream.
-				cin.clear(); // Reset failbit. Reset the state of the stream.
+			/* Last read failed either due to I/O error EOF.
+				Or the last stream of chars wasn't a valid number.*/
+			cout << "\n - ENTER A VALID NUMBER - \n";
+			// Establecer el stream como true para que no se cicle después.
+			// Esto se logra limpiando el mal estado del input stream.
+			cin.clear(); // Reset failbit. Reset the state of the stream.
 
-				/* Skip bad input.
-					We use cin.ignore to expunge the remaining input,
-						and then request that the user re-input.
-					SOURCE: Stack Overflow: How to check if input is numeric in C++.*/
-				cin.ignore(std::numeric_limits <std::streamsize>::max(), '\n');
-	//			cin.goodbit = true; // NO FUNCIONA.
-				continue; // Volver al inicio del ciclo.
-			}
-			*option = auxOption; // Si el auxiliar no es flotante, asignarlo.
-			/* Si se estableció un número válido (no se reinició el proceso con
-				el continue), hacer la variable true y salir del ciclo.*/
-			validNumber = true;
+			/* Skip bad input.
+				We use cin.ignore to expunge the remaining input,
+					and then request that the user re-input.
+				SOURCE: Stack Overflow: How to check if input is numeric in C++.*/
+			cin.ignore(std::numeric_limits <std::streamsize>::max(), '\n');
+			continue; // Volver al inicio del ciclo.
 		}
-
+		*option = auxOption; // Si el auxiliar no es flotante, asignarlo.
+		/* Si se estableció un número válido (no se reinició el proceso con
+			el continue), hacer la variable true y salir del ciclo.*/
+		validNumber = true;
+	}
     cout << endl;
 }
 
@@ -144,8 +147,6 @@ void fillArray(){
     cout << "\n - Enter the " << MAX << " elements: " << endl;
     for(int i = 0; i < MAX; ){
         cout << "[" << i << "]: ";
-//        try{   // Quería ver si ingresaba un valor válido.
-//        cin >> Buffer[i]; // Enter the value of the array.
 		cin >> value;
 
 		/* To check if the entered value is a number or not:
@@ -153,7 +154,9 @@ void fillArray(){
 				throw an exception when the data provided does not fit. The
 				stream changes its internal state to false. So you may simply
 				do something like:"*/
-		if(!cin){ // !std::cin
+        /* This checks if the entered value is a float.
+            (value - floor(value) > 0)*/
+		if(!cin || (value - floor(value) > 0)){ // !std::cin || std::cin.fail()
 			/* Last read failed either due to I/O error EOF.
 				Or the last stream of chars wasn't a valid number.*/
 			cout << "\n - ENTER A VALID NUMBER - \n";
@@ -166,16 +169,11 @@ void fillArray(){
 					and then request that the user re-input.
 				SOURCE: Stack Overflow: How to check if input is numeric in C++.*/
 			cin.ignore(std::numeric_limits <std::streamsize>::max(), '\n');
-//			cin.goodbit = true; // NO FUNCIONA.
 			continue; // Volver al inicio del ciclo.
 		}
 
-		// Asignamos el valor bajo el decimal al arreglo de enteros.
-        Buffer[i] = floor(value);
-//        }
-//        catch(){
-//
-//        }
+		// El valor es entero, por lo que se le asigna al arreglo (de enteros).
+        Buffer[i] = value;
         cout << endl;
         // Como no entró a la condición anterior y no falló, aumentar el iterador.
         i++;
