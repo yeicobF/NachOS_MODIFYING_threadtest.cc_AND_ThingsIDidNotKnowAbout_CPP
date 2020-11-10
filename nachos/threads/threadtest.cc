@@ -58,11 +58,31 @@ int Buffer[MAX];// = {}; // Initialize array with 0s. // This is done automatica
 //	purposes.
 //----------------------------------------------------------------------
 
-// Method that checks if an entered value is valid (Integer).
-bool isEnteredValidInt(std::cin cin, float auxOption){
-    return !cin || (auxOption - floor(auxOption) > 0);
+// Method that checks if an entered value is valid (Integer) or not.
+// The stream (std::cin in this case) is sent this way as a parameter. I found it that way.
+// SOURCE: Stack Overflow: How to pass cin to a function?
+bool isEnteredValueNotInt(std::istream& stream, float value){
+    // It returns true if the entered value is not an int (float or string).
+    return !stream || (value - floor(value) > 0);
 }
 
+// Method that clears the input stream and allows user to input a value again.
+// The stream (std::cin in this case) is sent this way as a parameter. I found it that way.
+// SOURCE: Stack Overflow: How to pass cin to a function?
+void allowInputNumberAgain(std::istream& stream){
+    /* Last read failed either due to I/O error EOF.
+        Or the last stream of chars wasn't a valid number.*/
+    cout << "\n - ENTER A VALID NUMBER - \n";
+    // Establecer el stream como true para que no se cicle después.
+    // Esto se logra limpiando el mal estado del input stream.
+    stream.clear(); // Reset failbit. Reset the state of the stream.
+
+    /* Skip bad input.
+        We use cin.ignore to expunge the remaining input,
+            and then request that the user re-input.
+        SOURCE: Stack Overflow: How to check if input is numeric in C++.*/
+    stream.ignore(std::numeric_limits <std::streamsize>::max(), '\n');
+}
 // Function that allows the user to choose what to do from the menu.
 // Option passes by reference not to return it from the function.
 void selectOption(int *option){
@@ -76,19 +96,9 @@ void selectOption(int *option){
 
 		// También valida que el número ingresado no sea flotante.
 		// Si la diferencia entre el floor y el valor es > 0, es flotante (decimales).
-		if(!cin || (auxOption - floor(auxOption) > 0)){ // !std::cin || std::cin.fail();
-			/* Last read failed either due to I/O error EOF.
-				Or the last stream of chars wasn't a valid number.*/
-			cout << "\n - ENTER A VALID NUMBER - \n";
-			// Establecer el stream como true para que no se cicle después.
-			// Esto se logra limpiando el mal estado del input stream.
-			cin.clear(); // Reset failbit. Reset the state of the stream.
-
-			/* Skip bad input.
-				We use cin.ignore to expunge the remaining input,
-					and then request that the user re-input.
-				SOURCE: Stack Overflow: How to check if input is numeric in C++.*/
-			cin.ignore(std::numeric_limits <std::streamsize>::max(), '\n');
+		if(isEnteredValueNotInt(cin, auxOption)){ // !std::cin || std::cin.fail();
+            // Here the input stream is cleaned, wich allows user to input data again.
+            allowInputNumberAgain(cin);
 			continue; // Volver al inicio del ciclo.
 		}
 		*option = auxOption; // Si el auxiliar no es flotante, asignarlo.
@@ -156,19 +166,9 @@ void fillArray(){
 				do something like:"*/
         /* This checks if the entered value is a float.
             (value - floor(value) > 0)*/
-		if(!cin || (value - floor(value) > 0)){ // !std::cin || std::cin.fail()
-			/* Last read failed either due to I/O error EOF.
-				Or the last stream of chars wasn't a valid number.*/
-			cout << "\n - ENTER A VALID NUMBER - \n";
-			// Establecer el stream como true para que no se cicle después.
-			// Esto se logra limpiando el mal estado del input stream.
-			cin.clear(); // Reset failbit. Reset the state of the stream.
-
-			/* Skip bad input.
-				We use cin.ignore to expunge the remaining input,
-					and then request that the user re-input.
-				SOURCE: Stack Overflow: How to check if input is numeric in C++.*/
-			cin.ignore(std::numeric_limits <std::streamsize>::max(), '\n');
+		if(isEnteredValueNotInt(cin, value)){ // !std::cin || std::cin.fail()
+            // Here the input stream is cleaned, wich allows user to input data again.
+            allowInputNumberAgain(cin);
 			continue; // Volver al inicio del ciclo.
 		}
 
@@ -274,14 +274,14 @@ void Thread3_Actions(int which){
         sum += Buffer[i];
 
     // Printing the array.
-    cout<<"\n - Elements: ";
+    cout << "\n - Elements: ";
     printArray();
 
     // Calcula y muestra el promedio de los elementos del arreglo.
     // Calculating and showing the average of the elements of the array.
     // avg = (float)sum / sizeof(Buffer) / sizeof(int);
     avg = (float)sum / (float)MAX;
-    cout<<"\n - [Average: " << avg << "]\n" << endl;
+    cout << "\n - [Average: " << avg << "]\n" << endl;
 
     /* Context switch back and forth between Threads by calling Thread::Yield.
       This allows to go back to the main Thread (ThreadTest) and continue
