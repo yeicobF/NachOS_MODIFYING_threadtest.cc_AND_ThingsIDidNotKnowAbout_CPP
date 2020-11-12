@@ -12,7 +12,7 @@
 #include "copyright.h"
 #include "system.h"
 #include <iostream> // No dio problemas al compilar.
-#include <cmath> // Para sacar el std::floor.
+#include <cmath> // Para sacar el std::floor, std::ceil.
 /* For the stream check (std::cin in our case):
 	cin.ignore(std::numeric_limits <std::streamsize>::max(), '\n');
 	*/
@@ -157,7 +157,7 @@ void fillArray(){
 		cin >> value;
 
 		/* To check if the entered value is a number or not:
-			"Under normal circumstances the std::cin as all istreams dows not
+			"Under normal circumstances the std::cin as all istreams does not
 				throw an exception when the data provided does not fit. The
 				stream changes its internal state to false. So you may simply
 				do something like:"*/
